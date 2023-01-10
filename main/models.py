@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.urls import reverse
 
 
 class Tag(models.Model):
@@ -20,6 +21,9 @@ class Author(models.Model):
     def __str__(self):
         return self.full_name()
 
+    def get_absolute_url(self):
+        return reverse('detail-author', kwargs={'author_id': self.pk})
+
 
 class Post(models.Model):
     title = models.CharField(max_length=125)
@@ -35,3 +39,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('detail-post', kwargs={'post_slug': self.slug})
+
