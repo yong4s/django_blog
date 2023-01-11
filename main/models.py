@@ -43,3 +43,6 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('detail-post', kwargs={'post_slug': self.slug})
 
+    class Meta:
+        verbose_name = "Публікація"
+        verbose_name_plural = "Публікації"
