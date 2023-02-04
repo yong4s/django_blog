@@ -5,10 +5,10 @@ from .models import *
 
 class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
-    list_filter = ("author", "tags", "date")
-    list_display = ("title", "author", "date")
+    list_filter = ("tags", "date")
+    list_display = ("title", "date", 'user')
+    search_fields = ("title",)
 
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Author)
 admin.site.register(Tag)

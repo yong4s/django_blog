@@ -1,7 +1,8 @@
 {% extends 'main/base.html' %}
 
 {%block content%}
-{% for post in posts %}
+<h1>{{author}}</h1>
+{% for post in posts%}
 <p><a href="{{ post.get_absolute_url }}">{{post}}</a></p>
 {% endfor %}
 {% endblock %}

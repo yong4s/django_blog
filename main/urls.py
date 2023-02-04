@@ -1,11 +1,16 @@
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 
 urlpatterns = [
-    path('index/', views.starting_page, name='index'),
+    path('', views.starting_page, name='index'),
     path('post/<post_slug>/', views.detail_post, name='detail-post'),
-    path('author/<author_id>/', views.detail_author, name='detail-author'),
-    path('show_authors/', views.show_all_authors, name="show-authors")
+    path('show_form/', views.show_form, name='show_form'),
+    path('add_post/', views.add_post, name='add_post'),
+    path('author/<author_id>/', views.detail_author, name='detail-author')
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

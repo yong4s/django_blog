@@ -5,7 +5,6 @@
 {% for post in latest_posts %}
 <div class="card border border-primary" style="width: 25rem;">
     <h4>{{post.title}}</h4>
-    <img src="{% static 'main/img/'|add:post.image_name %}" alt="{{ post.title }}">
     <div class="card-body">
         <p class="card-text">{{ post.content|truncatechars:100 }}</p>
         <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Читати більше</a>

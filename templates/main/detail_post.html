@@ -6,10 +6,10 @@
 
 
 <article>
-    <img class="rounded mx-auto d-block" style="max-width:30%;" src="{% static 'main/img/'|add:post.image_name %}"
+    <img class="rounded mx-auto d-block" style="max-width:30%;" src=""
          alt="{{ post.title }}">
     <p>{{post.content}}</p>
-    <address>By <a href="{{post.author.get_absolute_url}}">{{post.author}}</a></address>
+    <address>By <a href="">{{post.user}}</a></address>
     <address>Contact: <a href="mailto:test@gmail.com">Email</a></address>
     <div>Last updated on
         <time>{{ post.date|date:"d M Y" }}</time>
