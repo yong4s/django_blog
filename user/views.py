@@ -23,6 +23,8 @@ def register_user(request):
             messages.info(request, "Registration successful")
 
             return HttpResponseRedirect(reverse("index"))
+        else:
+            messages.error(request, " ")
     else:
         form = RegisterForm()
 

@@ -3,18 +3,33 @@ from django.http import HttpResponseRedirect
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib import messages
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
 
 from .models import *
 from .forms import *
 from django.contrib.auth.models import User
 
 
-def starting_page(request):
-    latest_posts = Post.objects.all().order_by("-pk")[:4]
-    context = {
-        'latest_posts': latest_posts
-    }
-    return render(request, 'main/in-dex.html', context)
+class IndexView(ListView):
+    model = Post
+    template_name = 'main/index.html'
+    context_object_name = 'latest_posts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'index'
+        return context
+
+    def get_queryset(self):
+        return Post.objects.all().order_by("-pk")[:5]
+
+# def starting_page(request):
+#     latest_posts = Post.objects.all().order_by("-pk")[:4]
+#     context = {
+#         'latest_posts': latest_posts
+#     }
+#     return render(request, 'main/index.html', context)
 
 
 # posts
