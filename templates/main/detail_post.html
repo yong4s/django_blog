@@ -9,14 +9,18 @@
     <img class="rounded mx-auto d-block" style="max-width:30%;" src=""
          alt="{{ post.title }}">
     <p>{{post.content}}</p>
+    {% if post.user.pk %}
+    <address>By <a href="{% url 'detail-author' post.user.pk %}">{{post.user}}</a></address>
+    {% else %}
     <address>By <a href="">{{post.user}}</a></address>
+    {% endif %}
     <address>Contact: <a href="mailto:test@gmail.com">Email</a></address>
     <div>Last updated on
         <time>{{ post.date|date:"d M Y" }}</time>
     </div>
     <br>
     <div class="fixed-bottom">
-        <h5> Tags: </h5></h6>
+        <h5> Tags: </h5>
         {% for tag in tags %}
         <span>{{tag}}</span>
         {% endfor %}

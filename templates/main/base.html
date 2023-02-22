@@ -9,6 +9,11 @@
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
+{% if request.user.is_authenticated %}
+<a href="{% url 'profile' user.pk %}">{{user}}</a>
+{% else %}
+<a href="#">Login</a>
+{% endif %}
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}

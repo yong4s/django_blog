@@ -4,13 +4,54 @@
 {{ title }}
 {% endblock %}
 {% block content %}
-{% for post in latest_posts %}
-<div class="card border border-primary" style="width: 25rem;">
-    <h4>{{post.title}}</h4>
-    <div class="card-body">
-        <p class="card-text">{{ post.content|truncatechars:100 }}</p>
-        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Читати більше</a>
-    </div>
-</div><br>
-{% endfor %}
-{% endblock %}
+<!--Main layout-->
+<main class="my-5">
+    <div class="container">
+        <!--Section: Content-->
+        <section class="text-center">
+            <h4 class="mb-5"><strong>Latest posts</strong></h4>
+
+            <div class="row">
+                {% for post in latest_posts %}
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <div class="card">
+                        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                            <img src="{{MEDIA_URL}}{{post.img_name.url}}" class="img-fluid"/>
+                            <a href="#!">
+                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">
+                                Some quick example text to build on the card title and make up the bulk of the
+                                card's content.
+                            </p>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Read</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </section>
+
+        <!-- Pagination -->
+        <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+        </div>
+        {% endblock %}

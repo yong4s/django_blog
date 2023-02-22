@@ -1,10 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.views.decorators.http import require_POST, require_GET
 from django.contrib import messages
-from django.contrib.auth import authenticate
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, DetailView, View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import *
 from .forms import *
@@ -15,6 +13,7 @@ class IndexView(ListView):
     model = Post
     template_name = 'main/index.html'
     context_object_name = 'latest_posts'
+    paginate_by = 6
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -22,53 +21,53 @@ class IndexView(ListView):
         return context
 
     def get_queryset(self):
-        return Post.objects.all().order_by("-pk")[:5]
-
-# def starting_page(request):
-#     latest_posts = Post.objects.all().order_by("-pk")[:4]
-#     context = {
-#         'latest_posts': latest_posts
-#     }
-#     return render(request, 'main/index.html', context)
+        return Post.objects.all().order_by("-pk")
 
 
-# posts
-def detail_post(request, post_slug):
-    post = get_object_or_404(Post, slug=post_slug)
-    context = {
-        'post': post,
-        'tags': post.tags.all()
-    }
-    return render(request, 'main/detail_post.html', context)
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'main/detail_post.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        post = Post.objects.get(slug=self.kwargs.get('post_slug'))
+        context = super().get_context_data(**kwargs)
+        context['tags'] = post.tags.all()
+        return context
 
 
-@require_GET
-def show_form(request):
-    if request.user.is_authenticated:
-        form = AddPostForm()
-        return render(request, 'main/add_post.html', {'form': form})
-    else:
-        messages.info(request, 'Для публікації потрібно увійти у свій аккаунт')
-        return HttpResponseRedirect(reverse('login'))
+class PostCreateView(LoginRequiredMixin, CreateView):
+    form_class = AddPostForm
+    template_name = 'main/test_add_post.html'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(reverse('index'))
+
+    def get_initial(self, *args, **kwargs):
+        initial = super().get_initial()
+        initial['title'] = "Its test title"
+        return initial.copy()
 
 
-@require_POST
-def add_post(request):
-    form = AddPostForm(request.POST or None, request.FILES or None)
-    if not form.is_valid():
-        return HttpResponseRedirect(reverse('show_form'))
+class AuthorDetailView(DetailView):
+    model = User
+    template_name = 'main/detail_author.html'
+    pk_url_kwarg = 'author_id'
+    context_object_name = 'author'
 
-    article = form.save(commit=False)
-    article.user = request.user
-    article.save()
-    messages.success(request, 'Success')
-    return HttpResponseRedirect(reverse('index'))
+    def get_context_data(self, **kwargs):
+        author = User.objects.get(pk=self.kwargs.get('author_id'))
+        context = super().get_context_data(**kwargs)
+        context['posts'] = author.post.all()
+        return context
 
 
-def detail_author(request, author_id):
-    author = get_object_or_404(User, pk=author_id)
-    context = {
-        'author': author,
-        'posts': author.post.all()
-    }
-    return render(request, 'main/detail_author.html', context)
+class ProfileUserView(DetailView):
+    model = User
+    template_name = 'main/profile.html'
+    pk_url_kwarg = 'user_id'
+    context_object_name = 'profile'
